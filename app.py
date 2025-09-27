@@ -3,6 +3,8 @@ import random
 import os
 import pickle
 
+#hello hello wassup
+
 class App:
 
     def __init__(self):
