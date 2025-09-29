@@ -19,54 +19,75 @@ def header(document, docName, qualifications, clinic, clinicAddress, clinicLogoP
     bottomLeft= table.cell(1,0).paragraphs[0]  
     bottomRight = table.cell(1,1).paragraphs[0]
  
-    topLeft.add_run(clinic)
-    bottomLeft.add_run(clinicAddress)
-    topRight.add_run(f'Dr. {docName}')
+    topLeft.add_run(clinic).font.name = 'IBM Plex Mono'
+    bottomLeft.add_run(clinicAddress).font.name = 'IBM Plex Mono'
+    topRight.add_run(f'Dr. {docName}').font.name = 'IBM Plex Mono'
     topRight.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-    bottomRight.add_run(qualifications)
+    bottomRight.add_run(qualifications).font.name = 'IBM Plex Mono'
     bottomRight.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     line()
 
 def body(document, docName, qualifications, patientName, patientAge, diagnosis, medicines, signaturePath):
     date = document.add_paragraph(f'Date: {datetime.now()}')
+    for run in date.runs:
+        run.font.name = 'IBM Plex Mono'
     date.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     
-    document.add_paragraph(f'Patient name: {patientName}\nPatient Age: {patientAge}')
-    document.add_paragraph(f'Diagnosis: {diagnosis}')
+    patientDetails = document.add_paragraph(f'Patient name: {patientName}\nPatient Age: {patientAge}')
+    for run in patientDetails.runs:
+        run.font.name = 'IBM Plex Mono'
+    diagnosisPara = document.add_paragraph(f'Diagnosis: {diagnosis}')
+    for run in diagnosisPara.runs:
+        run.font.name = 'IBM Plex Mono'
 
     
     line()
 
-    table = document.add_table(rows=1, cols=5)
+    table = document.add_table(rows=1, cols=5, style = 'Table Grid')
+    table.autofit = False
     row = table.rows[0].cells
-    row[0].text = 'Medicine Name'
-    row[1].text = 'Dosage'
-    row[2].text = 'Freqeuncy'
-    row[3].text = 'Duration'
-    row[4].text = 'Notes'
+    col1 = row[0].paragraphs[0].add_run('Medicine Name')
+    col1.font.name = 'IBM Plex Mono'
+    col1.font.bold = True
+    col2 = row[1].paragraphs[0].add_run('Dosage')
+    col2.font.name = 'IBM Plex Mono'
+    col2.font.bold = True
+    col3 = row[2].paragraphs[0].add_run('Frequency')
+    col3.font.name= 'IBM Plex Mono'
+    col3.font.bold = True
+    col4 = row[3].paragraphs[0].add_run('Duration')
+    col4.font.name = 'IBM Plex Mono'
+    col4.font.bold = True
+    col5 = row[4].paragraphs[0].add_run('Notes')
+    col5.font.name = 'IBM Plex Mono'
+    col5.font.bold = True
     
     line()
 
     for name, dosage, frequency, duration, notes in medicines:
         row = table.add_row().cells
-        row[0].text = name
-        row[1].text = dosage
-        row[2].text = frequency
-        row[3].text = duration
-        row[4].text = notes
-
+        entry1 = row[0].paragraphs[0].add_run(name)
+        entry1.font.name = 'IBM Plex Mono'
+        entry2 = row[1].paragraphs[0].add_run(dosage)
+        entry2.font.name = 'IBM Plex Mono'
+        entry3 = row[2].paragraphs[0].add_run(frequency)
+        entry3.font.name = 'IBM Plex Mono'
+        entry4 = row[3].paragraphs[0].add_run(duration)
+        entry4.font.name = 'IBM Plex Mono'
+        entry5 = row[4].paragraphs[0].add_run(notes)
+        entry5.font.name = 'IBM Plex Mono'
     
     section = document.sections[0]
     footer=section.footer
     footer_run = footer.paragraphs[0].add_run()
     footer_run.add_picture(signaturePath, width = Inches (1.2))
-    footer.add_paragraph(f'Dr. {docName}\n'+ qualifications)
+    footer.add_paragraph().add_run(f'Dr. {docName}\n'+ qualifications).font.name = 'IBM Plex Mono'
     line()
 
 document = Document()
 
-header(document, 'Anishwar Balaji', 'B.A.M.S', 'Atharvanee Ayurvedha', '#4/3, Vivekananda Nagar Main Road, Nesapakkam., Chennai', 'cliniclogo.png')
-body(document,'Anishwar Balaji','B.A.M.S','Abhinav', 17, 'Demodiagnosis', [['Nimbadi', 'light dose','Frequency 1', 'Duration 1', 'Notes'],['medicine 2', 'heavy dose', 'very frequent', 'long duration', 'notesssssssssssssssssssssssssss' ]], 'signature.jpg')
+header(document, 'Anishwar Balaji', 'B.A.M.S', 'Atharvanee Ayurvedha', '#4/3, Vivekananda Nagar Main Road, Nesapakkam., Chennai', 'Cliniclogo.png')
+body(document,'Anishwar Balaji','B.A.M.S','Abhinav', 17, 'Demodiagnosis', [['Nimbadi', 'light dose','Frequency 1', 'Duration 1', 'Notes'],['medicine 2', 'heavy dose', 'very frequent', 'long duration', 'notessssssssssssssssssssssssss' ]], 'signature.jpg')
 
 
 
