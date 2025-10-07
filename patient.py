@@ -1,23 +1,89 @@
 import random
 import os
+import mysql.connector as sqlx
 
 class Patient:
 
-    def __init__(self, patientID):
+    def __init__(self):
 
-        self.patientID = patientID
+        self.logged_in = False
+          
+    def signup(self, username: str, password: str):
+        
+        self.username: str = username
+        self.password: str = password
+        self.patientID: str = username[:2] + str(random.randint(100000, 1000000000))
+        self.patient_file_directory: str = 'PatientFiles/'+ self.patientID
+        os.mkdir(self.patient_file_directory)
+
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
+        mycursor = con.cursor()
+
+        query = f"INSERT INTO PatientUsers VALUES ('{self.username}', '{self.password}', '{self.patientID}');"
+
+        mycursor.execute(query)
+        con.commit()
+        con.close()
+
+        print(query)
+        print('Sign-up success!')
+
+        self.logged_in = True
         self.saved_files = os.listdir('PatientFiles/' + self.patientID)
-        self.saved_files = ['PatientFiles/' + self.patientID + '/' + file for file in self.saved_files]        
-    
-    def view_file(self, file_name):
+        self.saved_files = ['PatientFiles/' + self.patientID + '/' + file for file in self.saved_files]     
 
-        filepath = ''
-        for item in self.saved_files:
 
-            if file_name in item:
-                filepath = item
+    def login(self, username, password):
+
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
+        mycursor = con.cursor()
+        mycursor.execute('SELECT * FROM PatientUsers;')
+        print(mycursor.fetchall())
+        
+        for record in mycursor.fetchall():
+
+            if username in record:
+                
+                correct_password = record[1]
+
+                if password == correct_password:
+
+                    print('Login success!')
+                    self.logged_in = True
+                    self.username = username
+                    self.password = correct_password
+                    self.patientID = record[-1]
+                    break
+
+                else:
+
+                    print('Incorrect password.')
+                    break
+            
+            else:
+
+                print('This user does not exist.')
                 break
 
-    
+        con.close()
+
+    def logout(self):
+
+        self.logged_in = False
+        self.username = ''
+        self.password = ''
+        self.patientID = ''
+
+    #def access_files(self):
+
+        #for file in os.open(self.patient_file_directory):
+
+            #print(file)
+
+    def schedule_appointment(self, doctorID, date, time):
+
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
+        query = f'INSERT INTO Appointments VALUES ({doctorID}, {self.patientID}, {date}, {time})'
+
 
         

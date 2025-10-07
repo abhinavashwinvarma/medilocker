@@ -1,8 +1,10 @@
 from app import App
 from patient import Patient
+
 from tkinter import *
 from tkinter import ttk
 
+'''
 def say_hi():
 
     name.get()
@@ -26,3 +28,8 @@ for child in mainframe.winfo_children():
     child.grid_configure(padx=10, pady=10) #add padding to each item in frame
 
 root.mainloop()
+'''
+
+user = Patient()
+user.login('Anishwar Balaji', 'Eddy1')
+#user.schedule_appointment('Anishwar', '2025-10-10', '13:20:00')

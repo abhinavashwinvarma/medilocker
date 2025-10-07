@@ -1,0 +1,61 @@
+class Patient:
+patientID key
+
+patient_signup()
+patient_login()
+patient_logout()
+
+view_file(): fetch_prescription(date/doctor), fetch_test_result(date/doctor)
+add_file()
+delete_file()
+forward_report_to_doctor()
+
+#Appointment part
+schedule_appointment()
+report_symptom()
+find_doctor(special)
+
+=====================================================
+
+class Doctor:
+doctorID key
+
+doctor_signup()
+doctor_login()
+doctor_logout()
+
+view_patient() #only if you have visited doctor/
+               #or if you share stuff with doctor
+share_prescription(patientID)
+schedule_follow_up()
+set_availability()
+
+subclass Prescription:
+
+create_prescription() #figure out how to write prescription
+add_medicine(name, dosage)
+
+=====================================================
+
+class Clinic:
+clinicID
+
+share_reports(patientID, doctorID)
+
+=====================================================
+
+class App:
+
+login(userid, password)
+login()
+signup()
+remind_about_appointment(patient/doctor)
+remind_about_medicine(patient)
+earn_xp(patientID)
+redeem_xp(patientID, clinicID)
+
+=====================================================
+
+Tables:
+PatientUsers -> Username, Password, patientID
+
