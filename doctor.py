@@ -36,7 +36,6 @@ class Prescription(Doctor):
         notes=input("Enter any additional notes: ")
         self.medicines.append([name, dosage, frequency, duration, notes])
        
-        
     def header(self, document, docName, qualifications, clinic, clinicAddress):
         document.add_picture(self.clinicLogoPath, width = Inches(1.2))
         table = document.add_table(rows=2, cols=2)
@@ -88,6 +87,7 @@ class Prescription(Doctor):
             row[3].text = duration
             row[4].text = notes
     
+#listdir
 
 document = Document()
     

@@ -25,20 +25,19 @@ class Patient:
         con.commit()
         con.close()
 
-        print(query)
+        #print(query)
         print('Sign-up success!')
 
         self.logged_in = True
         self.saved_files = os.listdir('PatientFiles/' + self.patientID)
         self.saved_files = ['PatientFiles/' + self.patientID + '/' + file for file in self.saved_files]     
 
-
     def login(self, username, password):
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
         mycursor.execute('SELECT * FROM PatientUsers;')
-        print(mycursor.fetchall())
+        #print(mycursor.fetchall())
         
         for record in mycursor.fetchall():
 
@@ -53,6 +52,8 @@ class Patient:
                     self.username = username
                     self.password = correct_password
                     self.patientID = record[-1]
+                    self.patient_file_directory: str = 'PatientFiles/'+ self.patientID
+
                     break
 
                 else:
@@ -74,16 +75,18 @@ class Patient:
         self.password = ''
         self.patientID = ''
 
-    #def access_files(self):
+    def access_files(self):
 
-        #for file in os.open(self.patient_file_directory):
+        for file in os.listdir(self.patient_file_directory):
 
-            #print(file)
+            print(file)
 
     def schedule_appointment(self, doctorID, date, time):
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
-        query = f'INSERT INTO Appointments VALUES ({doctorID}, {self.patientID}, {date}, {time})'
-
-
-        
+        query = f'INSERT INTO Appointments VALUES ("{doctorID}", "{self.patientID}", "{date}", "{time}");'
+        #print(query)
+        cursor = con.cursor()
+        cursor.execute(query)
+        con.commit()
+        con.close()
