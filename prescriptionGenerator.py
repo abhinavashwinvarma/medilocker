@@ -3,7 +3,7 @@ from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
 
-def line():    
+def line(document):    
     line = document.add_heading(' ',0)
     run = line.runs[0]
     run.font.size=Pt(1)
@@ -25,7 +25,7 @@ def header(document, docName, qualifications, clinic, clinicAddress, clinicLogoP
     topRight.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     bottomRight.add_run(qualifications).font.name = 'IBM Plex Mono'
     bottomRight.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
-    line()
+    line(document)
 
 def body(document, docName, qualifications, patientName, patientAge, diagnosis, medicines, signaturePath):
     date = document.add_paragraph(f'Date: {datetime.now()}')
@@ -41,7 +41,7 @@ def body(document, docName, qualifications, patientName, patientAge, diagnosis, 
         run.font.name = 'IBM Plex Mono'
 
     
-    line()
+    line(document)
 
     table = document.add_table(rows=1, cols=5, style = 'Table Grid')
     table.autofit = False
@@ -62,7 +62,7 @@ def body(document, docName, qualifications, patientName, patientAge, diagnosis, 
     col5.font.name = 'IBM Plex Mono'
     col5.font.bold = True
     
-    line()
+    line(document)
 
     for name, dosage, frequency, duration, notes in medicines:
         row = table.add_row().cells
@@ -82,16 +82,16 @@ def body(document, docName, qualifications, patientName, patientAge, diagnosis, 
     footer_run = footer.paragraphs[0].add_run()
     footer_run.add_picture(signaturePath, width = Inches (1.2))
     footer.add_paragraph().add_run(f'Dr. {docName}\n'+ qualifications).font.name = 'IBM Plex Mono'
-    line()
+    line(document)
 
-document = Document()
+def create_prescription(doctorID, doctorname, qualifications, patientName, patientAge, patientDiagnosis, medicines, clinic, clinicAddress, clinicLogoPath, docSignaturePath):
+    document = Document()
+    header(document, doctorname, qualifications, clinic, clinicAddress, clinicLogoPath)
+    body(document, doctorname, qualifications, patientName, patientAge,patientDiagnosis, medicines, docSignaturePath)
 
-header(document, 'Anishwar Balaji', 'B.A.M.S', 'Atharvanee Ayurvedha', '#4/3, Vivekananda Nagar Main Road, Nesapakkam., Chennai', 'Cliniclogo.png')
-body(document,'Anishwar Balaji','B.A.M.S','Abhinav', 17, 'Demodiagnosis', [['Nimbadi', 'light dose','Frequency 1', 'Duration 1', 'Notes'],['medicine 2', 'heavy dose', 'very frequent', 'long duration', 'notessssssssssssssssssssssssss' ]], 'signature.jpg')
+    document.save('DoctorFiles/' + doctorID + '/Prescription.docx')
 
 
-
-document.save('Prescription.docx')
 #figure out the horizontal line thing ==> Title level  = 0
 #figure out the spacing between the logos at the top 
 #figure out tables

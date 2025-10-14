@@ -29,16 +29,13 @@ class Patient:
         print('Sign-up success!')
 
         self.logged_in = True
-        self.saved_files = os.listdir('PatientFiles/' + self.patientID)
-        self.saved_files = ['PatientFiles/' + self.patientID + '/' + file for file in self.saved_files]     
 
     def login(self, username, password):
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
         mycursor.execute('SELECT * FROM PatientUsers;')
-        #print(mycursor.fetchall())
-        
+                
         for record in mycursor.fetchall():
 
             if username in record:
@@ -90,3 +87,5 @@ class Patient:
         cursor.execute(query)
         con.commit()
         con.close()
+
+    
