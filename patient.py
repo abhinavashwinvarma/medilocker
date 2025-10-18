@@ -2,6 +2,7 @@ import random
 import os
 import mysql.connector as sqlx
 
+
 class Patient:
 
     def __init__(self):

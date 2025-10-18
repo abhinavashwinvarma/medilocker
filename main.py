@@ -3,32 +3,30 @@ from doctor import Doctor
 
 from tkinter import *
 from tkinter import ttk
+from customtkinter import *
 
 user = Doctor()
 
 def say_hi():
     print('hi')
 
-root = Tk() #application window
+root = CTk() #application window
 root.title("CS Project")
+root.configure(fg_color = "#1D262F")
+root.geometry('800x500')
 
-mainframe = ttk.Frame(root, padding = (3, 3, 3, 3)) #create frame object
+
+mainframe = CTkFrame(root, fg_color = 'transparent') #create frame object
 mainframe.grid(column=0, row=0, sticky=(N, W, E, S)) #place in (0, 0) of parent root, sticky implies to anchor
 
 #ttk.Button(mainframe, text= 'Hi', command= say_hi).grid(column = 1, row = 1, sticky = W)
-helloLabel = ttk.Label(mainframe, text = 'Hello, world.', font=('Berlin Sans FB', 32), foreground='#0D2454', relief='flat')
+helloLabel = CTkLabel(mainframe, text = 'Hi Anishwar.', font = ('Berlin Sans FB', 48), fg_color="transparent")
 helloLabel.grid(column = 2, row = 1, sticky = N)
-helloLabel.grid_configure(padx = 300)
+helloLabel.grid_configure(padx = 300, pady = 30)
 
-loginButton = ttk.Button(mainframe, text = 'Login', command = say_hi)
-loginButton.grid(column = 2, row = 3)
-loginButton.configure(width = '50')
-
-for child in mainframe.winfo_children(): 
-    child.grid_configure(padx=10, pady=10) #add padding to each item in frame
-
-helloLabel.grid_configure(padx = 150)
-
+login = CTkButton(mainframe, fg_color = "#34FEBB", text = 'LOGIN', text_color = '#1D262F', font = ('Berlin Sans FB', 25), corner_radius = 999)
+login.configure(hover_color = "#1EC78F")
+login.grid(column = 2, row = 6, sticky = 'N')
 root.mainloop()
 
 #user.login('Pranav Vijay', 'EddyHater123')
