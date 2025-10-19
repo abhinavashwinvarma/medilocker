@@ -59,3 +59,25 @@ redeem_xp(patientID, clinicID)
 Tables:
 PatientUsers -> Username, Password, patientID
 
+=====================================================
+
+Colors
+
+'#FFFFFA'
+'#29524A'
+'#3F6C51'
+'#FE9920'
+'#FA7921'
+
+'#FFFFFF'
+'#CC2936'
+'#443B81'
+'#2E294E'
+'#DE9E36'
+'#DEB841'
+
+
+
+
+
+
