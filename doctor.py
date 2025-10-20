@@ -1,9 +1,4 @@
-from datetime import datetime
-from docx import Document
-from docx.shared import Inches, Pt
-from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 import prescriptionGenerator
-
 import mysql.connector as sqlx
 import os 
 import random
@@ -31,7 +26,6 @@ class Doctor:
         con.commit()
         con.close()
 
-        #print(query)
         print('Sign-up success!')
 
         self.logged_in = True
