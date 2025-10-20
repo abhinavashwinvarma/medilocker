@@ -91,12 +91,12 @@
     "text_color_disabled": ["gray74", "gray60"]
   },
   "CTkComboBox": {
-    "corner_radius": 6,
+    "corner_radius": 10,
     "border_width": 2,
-    "fg_color": ["#F9F9FA", "#343638"],
-    "border_color": ["#979DA2", "#565B5E"],
-    "button_color": ["#979DA2", "#565B5E"],
-    "button_hover_color": ["#6E7174", "#7A848D"],
+    "fg_color": "#10202C",
+    "border_color": "#22BFAC",
+    "button_color": "#22BFAC",
+    "button_hover_color": "#324A5F",
     "text_color": ["gray14", "gray84"],
     "text_color_disabled": ["gray50", "gray45"]
   },

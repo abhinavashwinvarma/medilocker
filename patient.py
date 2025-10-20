@@ -59,10 +59,9 @@ class Patient:
                     print('Incorrect password.')
                     break
             
-            else:
-
-                print('This user does not exist.')
-                break
+        if not self.logged_in:
+            
+            print('This user does not exist.')
 
         con.close()
 
