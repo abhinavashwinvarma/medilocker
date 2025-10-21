@@ -3,12 +3,20 @@ from tkinter import ttk
 from customtkinter import *
 from PIL import Image
 
+from datetime import datetime
+
+
 import manager
 from patient import Patient
 from doctor import Doctor
 
-currentTheme = 'light'
+currentTheme = 'dark'
 errorColor = '#DB3A34'
+
+if currentTheme == 'light':
+    menuColor = '#527bb7'
+else:
+    menuColor = '#162B3C'
 
 set_default_color_theme("ColorThemes/" + currentTheme + "mode.json")
 
@@ -300,10 +308,40 @@ def load_createpage():
     createFrame.lift()
 
 def open_menu():
-    print('menu')
 
+    def on_closemenu_button_pressed():
+
+        menuFrame.destroy()
+
+    menuFrame = CTkFrame(root)
+    menuFrame.configure(fg_color = menuColor,
+                        width = 300,
+                        corner_radius = 0,
+                        border_width = 0)
+    menuFrame.grid(column = 0, row = 0, sticky = 'NSW')
+
+    closemenuButton = CTkButton(menuFrame, text = '', command = on_closemenu_button_pressed)
+    closemenuButtonIcon = CTkImage(Image.open('Icons/close.png'), size = (30, 30))    
+    closemenuButton.configure(image = closemenuButtonIcon,
+                         fg_color = 'transparent',
+                         hover = False,
+                         width = 50,
+                         height = 50)
+    closemenuButton.grid(column = 0, row = 0)
+    closemenuButton.grid_configure(padx = 20, pady = 20, sticky = 'W')
+
+    for i in range(5):
+        button = CTkButton(menuFrame, width = 300, 
+                           font = ('Lexend Giga Regular', 16),
+                           height = 50,
+                           corner_radius = 0,
+                           command = lambda: print('hi'))
+        button.grid(column = 0, row = i + 1)
+
+    menuFrame.lift()
+    
 def load_dashboard():
-
+    
     dashboardFrame = CTkFrame(root) 
     dashboardFrame.configure(border_width = 0)
     dashboardFrame.grid(column = 0, row = 0, sticky = 'NSEW')
@@ -325,7 +363,6 @@ def load_dashboard():
 
     dashboardFrame.lift()
 
-
-load_mainpage()
+load_dashboard()
 
 root.mainloop()
