@@ -1,16 +1,15 @@
-from tkinter import *
-from tkinter import ttk
 from customtkinter import *
 from PIL import Image
 
 from datetime import datetime
 
-
 import manager
 from patient import Patient
 from doctor import Doctor
 
-currentTheme = 'dark'
+os.startfile('DoctorFiles\DrAk191871\SEMICONDUCTOR.docx')
+
+currentTheme = 'light'
 errorColor = '#DB3A34'
 
 if currentTheme == 'light':
@@ -320,7 +319,12 @@ def open_menu():
                         border_width = 0)
     menuFrame.grid(column = 0, row = 0, sticky = 'NSW')
 
-    closemenuButton = CTkButton(menuFrame, text = '', command = on_closemenu_button_pressed)
+    topFrame = CTkFrame(menuFrame)
+    topFrame.configure(border_width = 0)
+    topFrame.grid(column = 0, row = 0)
+    topFrame.grid_configure(sticky = 'EW')
+
+    closemenuButton = CTkButton(topFrame, text = '', command = on_closemenu_button_pressed)
     closemenuButtonIcon = CTkImage(Image.open('Icons/close.png'), size = (30, 30))    
     closemenuButton.configure(image = closemenuButtonIcon,
                          fg_color = 'transparent',
@@ -330,6 +334,12 @@ def open_menu():
     closemenuButton.grid(column = 0, row = 0)
     closemenuButton.grid_configure(padx = 20, pady = 20, sticky = 'W')
 
+    menuLabel = CTkLabel(topFrame, text = 'Menu')
+    menuLabel.configure(font = ('Libre Caslon Text Regular', 36),
+                        text_color = '#FFFFFF')
+    menuLabel.grid(column = 1, row = 0, sticky = 'W')
+    menuLabel.grid_configure(pady = 20)
+
     for i in range(5):
         button = CTkButton(menuFrame, width = 300, 
                            font = ('Lexend Giga Regular', 16),
@@ -337,6 +347,7 @@ def open_menu():
                            corner_radius = 0,
                            command = lambda: print('hi'))
         button.grid(column = 0, row = i + 1)
+        button.grid_configure(columnspan = 2)
 
     menuFrame.lift()
     
@@ -363,6 +374,5 @@ def load_dashboard():
 
     dashboardFrame.lift()
 
-load_dashboard()
-
+load_mainpage()
 root.mainloop()
