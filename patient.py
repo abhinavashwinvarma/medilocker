@@ -13,14 +13,14 @@ class Patient:
         
         self.username: str = username
         self.password: str = password
-        self.patientID: str = username[:2] + str(random.randint(100000, 1000000000))
-        self.patient_file_directory: str = 'PatientFiles/'+ self.patientID
-        os.mkdir(self.patient_file_directory)
+        self.ID: str = username[:2] + str(random.randint(100000, 1000000000))
+        self.fileDirectory: str = 'PatientFiles/'+ self.ID
+        os.mkdir(self.fileDirectory)
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
 
-        query = f"INSERT INTO PatientUsers VALUES ('{self.username}', '{self.password}', '{self.patientID}');"
+        query = f"INSERT INTO PatientUsers VALUES ('{self.username}', '{self.password}', '{self.ID}');"
 
         mycursor.execute(query)
         con.commit()
@@ -49,8 +49,8 @@ class Patient:
                     self.logged_in = True
                     self.username = username
                     self.password = correct_password
-                    self.patientID = record[-1]
-                    self.patient_file_directory: str = 'PatientFiles/'+ self.patientID
+                    self.ID = record[-1]
+                    self.fileDirectory: str = 'PatientFiles/'+ self.ID
 
                     break
 
@@ -70,18 +70,17 @@ class Patient:
         self.logged_in = False
         self.username = ''
         self.password = ''
-        self.patientID = ''
+        self.ID = ''
 
     def access_files(self):
 
-        for file in os.listdir(self.patient_file_directory):
-
+        for file in os.listdir(self.fileDirectory):
             print(file)
 
     def schedule_appointment(self, doctorID, date, time):
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
-        query = f'INSERT INTO Appointments VALUES ("{doctorID}", "{self.patientID}", "{date}", "{time}");'
+        query = f'INSERT INTO Appointments VALUES ("{doctorID}", "{self.ID}", "{date}", "{time}");'
         #print(query)
         cursor = con.cursor()
         cursor.execute(query)

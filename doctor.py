@@ -13,14 +13,14 @@ class Doctor:
         
         self.username: str = username
         self.password: str = password
-        self.doctorID: str = 'Dr' + username[:2] + str(random.randint(100000, 999999)) #format: DrAB240095
-        self.doc_file_directory: str = 'DoctorFiles/'+ self.doctorID
-        os.mkdir(self.doc_file_directory)
+        self.ID: str = 'Dr' + username[:2] + str(random.randint(100000, 999999)) #format: DrAB240095
+        self.fileDirectory: str = 'DoctorFiles/'+ self.ID
+        os.mkdir(self.fileDirectory)
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
 
-        query = f"INSERT INTO DoctorUsers VALUES ('{self.username}', '{self.password}', '{self.doctorID}');"
+        query = f"INSERT INTO DoctorUsers VALUES ('{self.username}', '{self.password}', '{self.ID}');"
 
         mycursor.execute(query)
         con.commit()
@@ -38,7 +38,6 @@ class Doctor:
         
         for record in mycursor.fetchall():
 
-            print(record)
             if username in record:
                 correct_password = record[1]
 
@@ -47,8 +46,8 @@ class Doctor:
                     self.logged_in = True
                     self.username = username
                     self.password = correct_password
-                    self.doctorID = record[-1]
-
+                    self.ID = record[-1]
+                    self.fileDirectory = 'DoctorFiles/'+ self.ID
                     break
 
                 else:
@@ -70,14 +69,14 @@ class Doctor:
         patientName = cur.fetchall()[0][0]
         cur.execute(queryAge)
         patientAge = cur.fetchall()[0][0]
-        prescriptionGenerator.create_prescription(self.doctorID, self.docName, self.qualifications, patientName, patientAge, diagnosis, medicines, self.clinicName, self.clinicAddress, self.clinicLogoPath, self.signature)
+        prescriptionGenerator.create_prescription(self.ID, self.docName, self.qualifications, patientName, patientAge, diagnosis, medicines, self.clinicName, self.clinicAddress, self.clinicLogoPath, self.signature)
     
     def logout(self):
 
         self.logged_in = False
         self.username = ''
         self.password = ''
-        self.doctorID = ''
+        self.ID = ''
 
 
 

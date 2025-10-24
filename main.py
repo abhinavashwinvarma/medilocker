@@ -7,7 +7,7 @@ import manager
 from patient import Patient
 from doctor import Doctor
 
-os.startfile('DoctorFiles\DrAk191871\SEMICONDUCTOR.docx')
+#os.startfile('DoctorFiles\DrAk191871\SEMICONDUCTOR.docx')
 
 currentTheme = 'light'
 errorColor = '#DB3A34'
@@ -178,6 +178,7 @@ def load_signinpage():
     passwordEntry.configure(font = ('Libre Caslon Text Regular', 20),
                         width = 300,
                         height = 50)
+    #passwordEntry.bind('<Return>', command = on_signin_button_pressed)
     passwordEntry.grid(column = 1, row = 3, sticky = 'EW')
     passwordEntry.grid_configure(pady = 10, padx = 20)
     
@@ -352,10 +353,12 @@ def open_menu():
     menuFrame.lift()
     
 def load_dashboard():
-    
+  
     dashboardFrame = CTkFrame(root) 
     dashboardFrame.configure(border_width = 0)
     dashboardFrame.grid(column = 0, row = 0, sticky = 'NSEW')
+    dashboardFrame.columnconfigure(1, weight = 1)
+    dashboardFrame.rowconfigure(1, weight = 1)
 
     menuButton = CTkButton(dashboardFrame, text = '', command = open_menu)
     menuButtonIcon = CTkImage(Image.open('Icons/' + currentTheme + 'menu.png'), size = (30, 30))    
@@ -365,14 +368,53 @@ def load_dashboard():
                          width = 50,
                          height = 50)
     menuButton.grid(column = 0, row = 0)
-    menuButton.grid_configure(padx = 20, pady = 20)
+    menuButton.grid_configure(padx = 20, pady = 20, sticky = 'W')
 
     dashboardLabel = CTkLabel(dashboardFrame, text = 'Dashboard')
     dashboardLabel.configure(font = ('Libre Caslon Text Regular', 36))
     dashboardLabel.grid(column = 1, row = 0, sticky = 'W')
     dashboardLabel.grid_configure(pady = 20)
 
+    fileFrame = CTkFrame(dashboardFrame)
+    fileFrame.configure(border_width = 0)
+    fileFrame.grid(column = 0, row = 1, sticky = 'NSEW')
+    fileFrame.grid_configure(columnspan = 2)
+    fileFrame.columnconfigure((0, 1, 2), weight = 1)
+    fileFrame.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight = 1)
+    
+    current_grid_column = 0
+    current_grid_row = 0
+
+    for file in os.listdir(manager.user.fileDirectory):
+
+        fileObject = CTkFrame(fileFrame)
+        fileObject.configure(border_width = 2,
+                             border_color = "#DF9E25",
+                             fg_color = '#F6AE2D',
+                             width = 250, 
+                            height = 120)
+        fileObject.grid(column = current_grid_column, row = current_grid_row)
+        fileObject.columnconfigure(0, weight = 1)
+        fileObject.grid_propagate(False)
+
+        if current_grid_column == 0:
+            fileObject.grid_configure(padx = (20, 5), pady = 10)
+        else:
+            fileObject.grid_configure(padx = 5, pady = 10)
+
+
+        label = CTkLabel(fileObject, text = file)
+        label.grid(column = 0, row = 0)
+
+        if current_grid_column < 2:
+            current_grid_column += 1
+        else:
+            current_grid_row += 1
+            current_grid_column = 0
+        
     dashboardFrame.lift()
 
 load_mainpage()
+
+
 root.mainloop()
