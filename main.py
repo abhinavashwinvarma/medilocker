@@ -414,7 +414,127 @@ def load_dashboard():
         
     dashboardFrame.lift()
 
+def load_prescription():
+
+prescriptionFrame = CTkFrame(root) #create frame object
+prescriptionFrame.grid(column = 0, row = 0, sticky = 'NSEW') #place in (0, 0) of parent root, sticky implies to anchor
+prescriptionFrame.grid_configure(padx = 20, pady = 20)
+prescriptionFrame.columnconfigure(0, weight = 1)
+prescriptionFrame.rowconfigure(2, weight = 1)
+
+prescriptionLabel = CTkLabel(prescriptionFrame, text = 'Create prescription')
+prescriptionLabel.configure(font = ('Libre Caslon Text Regular', 36))
+prescriptionLabel.grid(column = 0, row = 1, sticky = 'W')
+prescriptionLabel.grid_configure(pady = (20, 0),
+                           padx = 50)
+
+
+fillupFrame = CTkFrame(prescriptionFrame)
+fillupFrame.configure(fg_color = 'transparent',
+                    border_width = 0)
+fillupFrame.grid(column = 0, row = 2, sticky = 'NSEW') #place in (0, 0) of parent root, sticky implies to anchor
+fillupFrame.grid_configure(padx = 20, pady = 20)
+fillupFrame.columnconfigure(0, minsize = 300)
+fillupFrame.columnconfigure(1, weight = 1)
+fillupFrame.rowconfigure(0, minsize = 70)
+
+medicineLabel = CTkLabel(fillupFrame, text = 'Medicine name:')
+medicineLabel.configure(font = ('Libre Caslon Text Regular', 25))
+medicineLabel.grid(column = 0, row = 2, sticky = 'W')
+medicineLabel.grid_configure(pady = 10, padx = 30)
+
+medicineEntry = CTkEntry(fillupFrame, placeholder_text = 'Enter medicine name...')
+medicineEntry.configure(font = ('Libre Caslon Text Regular', 20),
+                    width = 300,
+                    height = 50)
+medicineEntry.grid(column = 1, row = 2, sticky = 'EW')
+medicineEntry.grid_configure(pady = 10, padx = 20)
+medicineEntry.focus()
+
+dosageLabel = CTkLabel(fillupFrame, text = 'Dosage: ')
+dosageLabel.configure(font = ('Libre Caslon Text Regular', 25))
+dosageLabel.grid(column = 0, row = 3, sticky = 'W')
+dosageLabel.grid_configure(pady = 10, padx = 30)
+
+dosageEntry= CTkEntry(fillupFrame, placeholder_text = 'Enter quanitity of dosage...')
+dosageEntry.configure(font = ('Libre Caslon Text Regular', 20),
+                    width = 300,
+                    height = 50)
+dosageEntry.grid(column = 1, row = 3, sticky = 'EW')
+dosageEntry.grid_configure(pady = 10, padx = 20)
+
+durationLabel = CTkLabel(fillupFrame, text = 'Duration: ')
+durationLabel.configure(font = ('Libre Caslon Text Regular', 25))
+durationLabel.grid(column = 0, row = 4, sticky = 'W')
+durationLabel.grid_configure(pady = 10, padx = 30)
+
+durationEntry = CTkEntry(fillupFrame, placeholder_text = 'Enter duration of dosage...')
+durationEntry.configure(font = ('Libre Caslon Text Regular', 20),
+                    width = 300,
+                    height = 50)
+durationEntry.grid(column = 1, row = 4, sticky = 'EW')
+durationEntry.grid_configure(pady = 10, padx = 20)
+
+frequencyLabel = CTkLabel(fillupFrame, text = 'Frequency: ')
+frequencyLabel.configure(font = ('Libre Caslon Text Regular', 25))
+frequencyLabel.grid(column = 0, row = 5, sticky = 'W')
+frequencyLabel.grid_configure(pady = 10, padx = 30)
+
+frequencyEntry= CTkEntry(fillupFrame, placeholder_text = 'Enter frequency of dosage...')
+frequencyEntry.configure(font = ('Libre Caslon Text Regular', 20),
+                    width = 300,
+                    height = 50)
+frequencyEntry.grid(column = 1, row = 5, sticky = 'EW')
+frequencyEntry.grid_configure(pady = 10, padx = 20)
+
+notesLabel = CTkLabel(fillupFrame, text = 'Notes: ')
+notesLabel.configure(font = ('Libre Caslon Text Regular', 25))
+notesLabel.grid(column = 0, row = 6, sticky = 'W')
+notesLabel.grid_configure(pady = 10, padx = 30)
+
+notesEntry= CTkEntry(fillupFrame, placeholder_text = 'Additional notes...')
+notesEntry.configure(font = ('Libre Caslon Text Regular', 20),
+                    width = 300,
+                    height = 50)
+notesEntry.grid(column = 1, row = 6, sticky = 'EW')
+notesEntry.grid_configure(pady = 10, padx = 20)
+
+addButton = CTkButton(fillupFrame, text = 'Add medicine')
+addButton.configure(font = ('Lexend Giga Regular', 20),
+                    width = 200,
+                    height = 50)
+addButton.grid(column = 1, row =7, sticky = 'E', command = add_medicine)
+addButton.grid_configure(pady = 10, padx = 20)
+
+createPrescButton = CTkButton(fillupFrame, text = 'Generate Prescription')
+createPrescButton.configure(font = ('Lexend Giga Regular', 20),
+                    width = 200,
+                    height = 50)
+createPrescButton.grid(column = 1, row = 9, sticky = 'E', command = generate_prescription)
+createPrescButton.grid_configure(pady = 10, padx = 20)
+
+def add_medicine():
+    medicineName = medicineEntry.get()
+    dosage = dosageEntry.get()
+    duration = durationEntry.get()
+    frequency = frequencyEntry.get()
+    notes = notesEntry.get()
+    medicine_details = [medicineName, dosage, duration, frequency, notes]
+    Doctor.medicines.append(medicine_details)
+    medicineEntry.clear(0,END)
+    dosageEntry.clear(0,END)
+    durationEntry.clear(0,END)
+    frequencyEntry.clear(0,END)
+    notesEntry.clear(0,END)
+
+def generate_prescription():
+    pass
+
+prescriptionFrame.lift()
+
+
 load_mainpage()
 
 
 root.mainloop()
+
