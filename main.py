@@ -86,12 +86,14 @@ def load_signinpage():
         print(password)           
         if not (username == '' or password == ''):
 
-            if usertype == 'Civilian':
+            if usertype == 'Patient':
                 manager.user = Patient()
+                manager.userType = 'Patient'
 
             elif usertype == 'Doctor':
                 manager.user = Doctor()
-                
+                manager.userType = 'Doctor'
+
             manager.user.login(username, password)
 
             if not manager.user.logged_in:
@@ -147,7 +149,7 @@ def load_signinpage():
     iamaLabel.grid(column = 0, row = 1, sticky = 'W')
     iamaLabel.grid_configure(pady = 10, padx = 30)
 
-    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Civilian', 'Clinic'])
+    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient', 'Clinic'])
     iamaMenu.configure(font = ('Libre Caslon Text Regular', 20), 
                        dropdown_fg_color = '#FFFFFF',
                        dropdown_hover_color = '#527BB7',
@@ -201,15 +203,18 @@ def load_createpage():
 
         if username == '' or password == '':
 
-            print('dummy')
+            print('test')
 
         else:
 
             if userType == 'Doctor':
                 manager.user = Doctor()
+                manager.userType = 'Doctor'
+
 
             elif userType == 'Patient':
                 manager.user = Patient()
+                manager.userType = 'Patient'
 
             manager.user.signup(username, password)
             createFrame.destroy()
@@ -252,7 +257,7 @@ def load_createpage():
     iamaLabel.grid(column = 0, row = 1, sticky = 'W')
     iamaLabel.grid_configure(pady = 10, padx = 30)
 
-    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Civilian', 'Clinic'])
+    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient', 'Clinic'])
     iamaMenu.configure(font = ('Libre Caslon Text Regular', 18), 
                        dropdown_fg_color = '#FFFFFF',
                        dropdown_hover_color = '#527BB7',
@@ -313,6 +318,23 @@ def open_menu():
 
         menuFrame.destroy()
 
+    def on_menuitem_button_pressed(page):
+
+        menuFrame.destroy()
+
+        if page == 'DASHBOARD':
+            load_dashboard() 
+
+        elif page == 'APPOINTMENTS':
+            load_appointmentpage()
+
+        elif page == 'ACCOUNT':
+            load_accountpage()
+
+        elif page == 'LOGOUT':
+            manager.user.logout()
+            load_mainpage()
+
     menuFrame = CTkFrame(root)
     menuFrame.configure(fg_color = menuColor,
                         width = 300,
@@ -341,12 +363,14 @@ def open_menu():
     menuLabel.grid(column = 1, row = 0, sticky = 'W')
     menuLabel.grid_configure(pady = 20)
 
-    for i in range(5):
-        button = CTkButton(menuFrame, width = 300, 
+    for i, thing in enumerate(['DASHBOARD', 'APPOINTMENTS', 'ACCOUNT', 'LOGOUT']):
+
+        button = CTkButton(menuFrame, text = thing,
+                           width = 300, 
                            font = ('Lexend Giga Regular', 16),
                            height = 50,
                            corner_radius = 0,
-                           command = lambda: print('hi'))
+                           command = lambda x = thing: on_menuitem_button_pressed(x))
         button.grid(column = 0, row = i + 1)
         button.grid_configure(columnspan = 2)
 
@@ -354,6 +378,12 @@ def open_menu():
     
 def load_dashboard():
   
+    def on_open_file_pressed(file):
+
+        filePath = os.path.abspath(manager.user.fileDirectory + '/' + file)
+        os.startfile(filePath)
+
+    
     dashboardFrame = CTkFrame(root) 
     dashboardFrame.configure(border_width = 0)
     dashboardFrame.grid(column = 0, row = 0, sticky = 'NSEW')
@@ -390,7 +420,7 @@ def load_dashboard():
         fileObject = CTkFrame(fileFrame)
         fileObject.configure(border_width = 2,
                              border_color = "#DF9E25",
-                             fg_color = '#F6AE2D',
+                             fg_color = 'transparent',
                              width = 250, 
                             height = 120)
         fileObject.grid(column = current_grid_column, row = current_grid_row)
@@ -399,20 +429,67 @@ def load_dashboard():
 
         if current_grid_column == 0:
             fileObject.grid_configure(padx = (20, 5), pady = 10)
+        elif current_grid_column == 2:
+            fileObject.grid_configure(padx = (5, 20), pady = 10)
         else:
             fileObject.grid_configure(padx = 5, pady = 10)
 
+        fileType = file[:2]
+        fileDate = file[3:11]
+        fileDoctor = file[12:][:-4]
 
-        label = CTkLabel(fileObject, text = file)
-        label.grid(column = 0, row = 0)
+        if fileType == 'PR':
+            fileType = 'Prescription'
 
+        elif fileType == 'MC':
+            fileType = 'Medical Certificate'
+
+        elif fileType == 'TR':
+            fileType = 'Test Report'
+        
+        fileTypeLabel = CTkLabel(fileObject, text = fileType)
+        fileTypeLabel.configure(font = ('Libre Caslon Text Regular', 12))
+        fileTypeLabel.grid(column = 0, row = 0)
+        fileTypeLabel.grid_configure(padx = 15, 
+                             pady = (5, 0),
+                             sticky = 'W')
+        
+        dateLabel = CTkLabel(fileObject, text = 'Issue Date: ' + fileDate)
+        dateLabel.configure(font = ('Libre Caslon Text Regular', 12))
+        dateLabel.grid(column = 0, row = 1)
+        dateLabel.grid_configure(padx = 15, 
+                             pady = 1,
+                             sticky = 'W') 
+        
+        doctLabel = CTkLabel(fileObject, text = 'Issued By: ' + fileDoctor)
+        doctLabel.configure(font = ('Libre Caslon Text Regular', 12))
+        doctLabel.grid(column = 0, row = 2)
+        doctLabel.grid_configure(padx = 15, 
+                             pady = 1,
+                             sticky = 'W') 
+
+        button = CTkButton(fileObject, text = 'OPEN', command = lambda x = file: on_open_file_pressed(x))
+        button.configure(font = ('Lexend Giga Regular', 12))
+        button.grid(column = 0, row = 3)
+        button.grid_configure(padx = 15,
+                              pady = 5,
+                              sticky = 'NSWE')
+        
         if current_grid_column < 2:
             current_grid_column += 1
         else:
             current_grid_row += 1
             current_grid_column = 0
-        
+    
     dashboardFrame.lift()
+
+def load_appointmentpage():
+
+    print('Appointments')
+
+def load_accountpage():
+
+    print('Account')
 
 load_mainpage()
 

@@ -1,1 +1,2 @@
 user = None
+userType = None
