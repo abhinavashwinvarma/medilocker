@@ -8,6 +8,7 @@ class Doctor:
     def __init__(self):
 
         self.logged_in = False
+        self.qualifications = 'MBBS'
 
     def signup(self, username: str, password: str):
         
@@ -15,12 +16,13 @@ class Doctor:
         self.password: str = password
         self.ID: str = 'Dr' + username[:2] + str(random.randint(100000, 999999)) #format: DrAB240095
         self.fileDirectory: str = 'DoctorFiles/'+ self.ID
+        self.consultedPatients = []
         os.mkdir(self.fileDirectory)
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
 
-        query = f"INSERT INTO DoctorUsers VALUES ('{self.username}', '{self.password}', '{self.ID}');"
+        query = f"INSERT INTO DoctorUsers VALUES ('{self.username}', '{self.password}', '{self.ID}', '{self.consultedPatients}');"
 
         mycursor.execute(query)
         con.commit()
@@ -46,8 +48,11 @@ class Doctor:
                     self.logged_in = True
                     self.username = username
                     self.password = correct_password
-                    self.ID = record[-1]
+                    self.ID = record[-2]
+                    self.consulted = eval(record[-1])
                     self.fileDirectory = 'DoctorFiles/'+ self.ID
+
+                    print(self.consulted)
                     break
 
                 else:
@@ -58,7 +63,7 @@ class Doctor:
             
             print('This user does not exist.') 
 
-    def finish_appointment(self, patientID, diagnosis):
+    def share_prescription(self, patientID, diagnosis):
 
         con = sqlx.connect(host = '127.0.0.1',user = 'root', password = 'root', database = 'medicine')
         cur = con.cursor()
@@ -67,9 +72,8 @@ class Doctor:
         medicines = [['Nimbadi', 'light dose','Frequency 1', 'Duration 1', 'Notes'],['medicine 2', 'heavy dose', 'very frequent', 'long duration', 'notessssssssssssssssssssssssss' ]]
         cur.execute(queryName)
         patientName = cur.fetchall()[0][0]
-        cur.execute(queryAge)
-        patientAge = cur.fetchall()[0][0]
-        prescriptionGenerator.create_prescription(self.ID, self.docName, self.qualifications, patientName, patientAge, diagnosis, medicines, self.clinicName, self.clinicAddress, self.clinicLogoPath, self.signature)
+        
+        prescriptionGenerator.create_prescription(self.ID, self.docName, self.qualifications, patientName, diagnosis, medicines, self.clinicName, self.clinicAddress, self.clinicLogoPath, self.signature)
     
     def logout(self):
 
