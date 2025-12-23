@@ -3,7 +3,7 @@
     "fg_color": "#EDF2F5"
   },
   "CTkToplevel": {
-    "fg_color": ["gray95", "gray10"]
+    "fg_color": "#EDF2F5"
   },
   "CTkFrame": {
     "corner_radius": 6,
@@ -41,7 +41,7 @@
     "border_color": ["#3E454A", "#949A9F"],
     "hover_color": ["#325882", "#14375e"],
     "checkmark_color": ["#DCE4EE", "gray90"],
-    "text_color": ["gray14", "gray84"],
+    "text_color": "#13315c",
     "text_color_disabled": ["gray60", "gray45"]
   },
   "CTkSwitch": {

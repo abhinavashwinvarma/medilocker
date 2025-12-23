@@ -15,9 +15,12 @@ class Patient:
         self.password: str = password
         self.ID: str = username[:2] + str(random.randint(100000, 1000000000))
         self.fileDirectory: str = 'PatientFiles/'+ self.ID
-        self.consulted = []
+        self.bioDirectory = 'UserBioDataFiles/PatientBioData/'+ self.ID
+        self.consulted = {}
+
         os.mkdir(self.fileDirectory)
-        
+        os.mkdir(self.bioDirectory)
+
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
 
@@ -52,6 +55,7 @@ class Patient:
                     self.password = correct_password
                     self.ID = record[-2]
                     self.fileDirectory: str = 'PatientFiles/'+ self.ID
+                    self.bioDirectory = 'UserBioDataFiles/PatientBioData/'+ self.ID
                     self.consulted = eval(record[-1]) 
 
                     break
@@ -79,11 +83,11 @@ class Patient:
         for file in os.listdir(self.fileDirectory):
             print(file)
 
-    def schedule_appointment(self, doctorID, date, time):
+    def schedule_appointment(self, doctorID, date, time, complaint):
 
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
-        query = f'INSERT INTO Appointments VALUES ("{doctorID}", "{self.ID}", "{date}", "{time}");'
-        #print(query)
+        query = f'INSERT INTO Appointments VALUES ("{doctorID}", "{self.ID}", "{date}", "{time}", 0, "{complaint}");'
+        print(query)
         cursor = con.cursor()
         cursor.execute(query)
         con.commit()
@@ -104,15 +108,19 @@ class Patient:
             docName = cursor.fetchone()[0]
             appointmentDate = thing[2]
             appointmentTime = thing[3]
-            appointmentStatus = bool(int(thing[-1]))
+            appointmentStatus = int(thing[-2])
+            complaint = thing[-1]
 
-            if not appointmentStatus:
+            if appointmentStatus == 0:
                 appointmentStatus = 'Pending request'
+
+            elif appointmentStatus == -1:
+                appointmentStatus = 'Request declined'
 
             else:
                 appointmentStatus = 'Confirmed'
 
-            formattedData.append([docName, appointmentDate, appointmentTime, appointmentStatus])
+            formattedData.append([docName, appointmentDate, appointmentTime, appointmentStatus, complaint])
 
         con.close()
         self.get_consulted()
@@ -129,7 +137,87 @@ class Patient:
 
         for doctorID, username in cursor.fetchall():
 
-            res[doctorID] = username
+            res[doctorID] = 'Dr. ' + username
 
-        print(self.consulted)
+        #print(self.consulted)
         self.consulted = res
+
+    def get_id_from_name(self, name):
+
+        for docID in self.consulted:
+
+            if self.consulted[docID] == name:
+
+                return docID
+    
+    def update_details(self, email, phoneNum, address, dob, age = 0):
+
+        if age == 0:
+
+            today = datetime.date.today()
+            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
+
+        delquery = f"DELETE FROM PatientDetails WHERE DoctorID = '{self.ID}'"
+        record = str((self.ID, self.username, email, phoneNum, address, age, dob))
+        query = f'INSERT INTO PatientDetails VALUES {record};'
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
+        cursor = con.cursor()
+        cursor.execute(delquery)
+        con.commit()
+        cursor.execute(query)
+        con.commit()
+        con.close()
+
+    def delete_appointments(self):
+
+        query = f'DELETE FROM Appointments WHERE STAT = -1;'
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
+        cursor = con.cursor()
+        cursor.execute(query)
+        con.commit()
+        con.close()
+        print(query)
+
+    def fetch_doctors(self):
+
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
+        query = "SELECT DoctorID, Username, Qualifications, Address FROM DoctorUsers NATURAL JOIN DoctorDetails;"
+        cursor = con.cursor()
+        cursor.execute(query)
+        return cursor.fetchall()
+    
+    def add_doctor(self, doctorID):
+
+        con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'medicine')
+        cursor = con.cursor()
+        nameQuery = f'SELECT Username FROM Doctorusers WHERE DoctorID = "{doctorID}";'
+        cursor.execute(nameQuery)
+        docName = cursor.fetchone()[0]
+
+        self.consulted[doctorID] = docName
+        updateQuery = f'UPDATE PatientUsers SET Doctors = "{self.consulted}" WHERE PatientID = "{self.ID}"'
+        cursor.execute(updateQuery)
+
+        fetchQuery = f'SELECT Patients FROM DoctorUsers WHERE DoctorID = "{doctorID}"'
+        cursor.execute(fetchQuery)
+        doctorConsulted = eval(cursor.fetchone()[0])
+        doctorConsulted[self.ID] = self.username
+        
+        updateQuery = f'UPDATE DoctorUsers SET Patients = "{doctorConsulted}" WHERE DoctorID = "{doctorID}"'
+        cursor.execute(updateQuery)
+        
+        con.commit()
+        con.close()
+
+    def get_account_details(self):
+
+        con = sqlx.connect(host = 'localhost', username = 'root', password = 'root', database = 'medicine')
+        cursor = con.cursor()
+        query = f"SELECT Username FROM patientUsers WHERE PatientID = '{self.ID}';"
+        cursor.execute(query)
+        username = cursor.fetchone()[0]
+        query = f"SELECT Email, Phone, DOB, Address, Conditions from PatientDetails WHERE PatientID = '{self.ID}';"
+        cursor.execute(query)
+        accountDetails = cursor.fetchone()
+        accountDetails = (username, ) + accountDetails
+        return accountDetails

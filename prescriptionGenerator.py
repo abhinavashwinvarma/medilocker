@@ -2,16 +2,18 @@ from docx import Document
 from docx.shared import Inches, Pt, RGBColor
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
 from datetime import datetime
+from datetime import date
 
 def line(document):    
+    
     line = document.add_heading(' ',0)
     run = line.runs[0]
     run.font.size=Pt(1)
     run.bold=False
     line.paragraph_format.line_spacing=0
 
-def header(document, docName, qualifications, clinic, clinicAddress, clinicLogoPath):
-    document.add_picture(clinicLogoPath, width = Inches(1.2))
+def header(document, docName, qualifications, clinic, clinicAddress):
+
     table = document.add_table(rows=2, cols=2)
     table.autofit = False
     topLeft = table.cell(0,0).paragraphs[0] 
@@ -27,7 +29,7 @@ def header(document, docName, qualifications, clinic, clinicAddress, clinicLogoP
     bottomRight.alignment = WD_PARAGRAPH_ALIGNMENT.RIGHT
     line(document)
 
-def body(document, docName, qualifications, patientName, patientAge, diagnosis, medicines, signaturePath):
+def body(document, docName, qualifications, patientName, patientAge, diagnosis, medicines):
     date = document.add_paragraph(f'Date: {datetime.now()}')
     for run in date.runs:
         run.font.name = 'IBM Plex Mono'
@@ -79,18 +81,21 @@ def body(document, docName, qualifications, patientName, patientAge, diagnosis, 
     
     section = document.sections[0]
     footer=section.footer
-    footer_run = footer.paragraphs[0].add_run()
-    footer_run.add_picture(signaturePath, width = Inches (1.2))
     footer.add_paragraph().add_run(f'Dr. {docName}\n'+ qualifications).font.name = 'IBM Plex Mono'
     line(document)
 
-def create_prescription(doctorID, doctorname, qualifications, patientName, patientAge, patientDiagnosis, medicines, clinic, clinicAddress, clinicLogoPath, docSignaturePath):
+def create_prescription(doctorID, patientID, doctorname, qualifications, patientName, patientAge, patientDiagnosis, medicines, clinic, clinicAddress):
+    
     document = Document()
-    header(document, doctorname, qualifications, clinic, clinicAddress, clinicLogoPath)
-    body(document, doctorname, qualifications, patientName, patientAge,patientDiagnosis, medicines, docSignaturePath)
+    header(document, doctorname, qualifications, clinic, clinicAddress)
+    body(document, doctorname, qualifications, patientName, patientAge,patientDiagnosis, medicines)
 
-    document.save('DoctorFiles/' + doctorID + '/Prescription.docx')
+    today = date.today()
+    formattedDate = today.strftime("%d-%m-%y")
+    fileName = (f'PR_{formattedDate}_')
 
+    document.save(f'PatientFiles/{patientID}/{fileName}Dr{doctorname}.docx')
+    document.save(f'DoctorFiles/{doctorID}/{fileName}{patientName}.docx')
 
 #figure out the horizontal line thing ==> Title level  = 0
 #figure out the spacing between the logos at the top 
