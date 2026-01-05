@@ -29,10 +29,7 @@ class Patient:
         mycursor.execute(query)
         con.commit()
         con.close()
-
-        #print(query)
-        #print('Sign-up success!')
-
+        
         self.logged_in = True
 
     def login(self, username, password):

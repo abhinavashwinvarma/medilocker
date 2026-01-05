@@ -8,7 +8,7 @@ import manager
 from patient import Patient
 from doctor import Doctor
 
-currentTheme = 'light'
+currentTheme = 'dark'
 errorColor = '#DB3A34'
 
 if currentTheme == 'light':
@@ -211,7 +211,7 @@ def load_signinpage():
     iamaLabel.grid(column = 0, row = 1, sticky = 'W')
     iamaLabel.grid_configure(pady = 10, padx = 30)
 
-    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient', 'Clinic'])
+    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient'])
     iamaMenu.configure(font = ('Libre Caslon Text Regular', 20), 
                        dropdown_fg_color = '#FFFFFF',
                        dropdown_hover_color = '#527BB7',
@@ -333,7 +333,7 @@ def load_createpage():
     iamaLabel.grid(column = 0, row = 1, sticky = 'W')
     iamaLabel.grid_configure(pady = 10, padx = 30)
 
-    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient', 'Clinic'])
+    iamaMenu = CTkComboBox(fillupFrame, values = ['Doctor', 'Patient'])
     iamaMenu.configure(font = ('Libre Caslon Text Regular', 18), 
                        dropdown_fg_color = '#FFFFFF',
                        dropdown_hover_color = '#527BB7',
