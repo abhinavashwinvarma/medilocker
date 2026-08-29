@@ -1,0 +1,6 @@
+sub_frame = CTkScrollableFrame(subroot, border_width = 0)
+sub_frame.grid(column = 0, row = 1, sticky = 'NSEW') 
+sub_frame.columnconfigure(0, minsize = 300)
+sub_frame.rowconfigure(0, minsize = 70)
+sub_frame.rowconfigure(1, weight = 0)
+sub_frame.columnconfigure(1, weight = 1)

@@ -11,7 +11,6 @@ cursor = con.cursor()
 cursor.execute(query)
 doctors = cursor.fetchall()
 
-
 con.close()
 
 

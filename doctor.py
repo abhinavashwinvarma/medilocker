@@ -20,7 +20,7 @@ class Doctor:
         self.consulted = {}
         os.mkdir(self.fileDirectory)
         os.mkdir(self.bioDirectory)
-
+        
         con = sqlx.connect(host = 'localhost', user = 'root', password = 'root', database = 'Medicine')
         mycursor = con.cursor()
 

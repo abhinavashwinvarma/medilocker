@@ -1,7 +1,8 @@
 from customtkinter import *
-from PIL import Image
+from PIL import Image, ImageDraw
 from tkinter import filedialog
 import mysql.connector as sqlx
+from math import floor
 
 #User-made modules
 import manager
@@ -10,6 +11,7 @@ from doctor import Doctor
 
 currentTheme = 'dark'
 errorColor = '#DB3A34'
+scroll = 0
 
 if currentTheme == 'light':
     menuColor = '#527bb7'
@@ -633,18 +635,59 @@ def load_dashboard():
     dashboardLabel.configure(font = ('Libre Caslon Text Regular', 36))
     dashboardLabel.grid(column = 1, row = 0, sticky = 'W')
     dashboardLabel.grid_configure(pady = 20)
-        
+
+    image_path = ''
+    default_image_path = 'UserBioDataFiles/Defaults/DefaultProfilePhoto.jpg'
+    save_path = manager.user.bioDirectory + '/ProfilePhoto.png'
+
+    if os.path.exists(save_path):
+        image_path = save_path
+
+    else:
+        image_path = default_image_path
+
+    accountPicture = Image.open(image_path)
+    accountPictureObject = CTkImage(light_image = accountPicture, size = (50,50))
+    accountPictureButton = CTkButton(dashboardFrame,width = 0,height = 0, fg_color = 'transparent',text = '', image = accountPictureObject, command = load_accountpage)
+    accountPictureButton.grid(column = 2, row = 0, sticky = 'NE')
+    accountPictureButton.grid_configure(padx = 20, pady = 20)
+    
     fileFrame = CTkFrame(dashboardFrame)
     fileFrame.configure(border_width = 0)
     fileFrame.grid(column = 0, row = 1, sticky = 'NSEW')
-    fileFrame.grid_configure(columnspan = 2)
+    fileFrame.grid_configure(columnspan = 3)
     fileFrame.columnconfigure((0, 1, 2), weight = 1)
     fileFrame.rowconfigure((0, 1, 2, 3, 4, 5, 6, 7), weight = 1)
     
     current_grid_column = 0
     current_grid_row = 0
 
-    for file in os.listdir(manager.user.fileDirectory):
+    global scroll
+    fileList = os.listdir(manager.user.fileDirectory)
+    fileCount = len(fileList)
+
+    def on_right_button_pressed():
+        global scroll
+
+        #print(ceil(fileCount/6))
+        if (scroll < floor(fileCount / 6)):
+            scroll += 1
+        else: 
+            scroll = 0
+
+        load_dashboard()
+
+    def on_left_button_pressed():
+        global scroll
+        if scroll > 0:
+            scroll -= 1
+
+        else:
+            scroll = 0
+        load_dashboard()
+
+    print((6*scroll), (6 * scroll)+6)
+    for file in fileList[(6 * scroll) : (6 * scroll) + 6]:
 
         fileObject = CTkFrame(fileFrame)
         fileObject.configure(border_width = 2,
@@ -716,7 +759,18 @@ def load_dashboard():
         else:
             current_grid_row += 1
             current_grid_column = 0
-    
+
+        if fileCount > 6:
+            if scroll != 0:
+                leftbutton = CTkButton(dashboardFrame, text = '<', command = on_left_button_pressed)
+                leftbutton.grid(column = 0, row = 4, sticky = 'S')
+                leftbutton.grid_configure(pady = 20, padx = 20)
+
+            if scroll != floor(fileCount/6):
+                rightbutton = CTkButton(dashboardFrame, text = '>', command = on_right_button_pressed)
+                rightbutton.grid(column = 2, row = 4, sticky = 'S')
+                rightbutton.grid_configure(pady = 20, padx = 20)
+            
     dashboardLabel.lift()
     dashboardFrame.lift()
 
@@ -1722,7 +1776,7 @@ def load_findpage():
 
     findFrame.lift()
 
-'''def DEBUG(type = 'Doctor'):
+def DEBUG(type = 'Doctor'):
     
     if type != 'Doctor':
         manager.user = Patient()
@@ -1732,13 +1786,11 @@ def load_findpage():
     else:
         manager.user = Doctor()
         manager.userType = 'Doctor'
-        manager.user.login('Pranav Vijay', 'EddyHater123')
+        manager.user.login('Abhinav', 'abc123')
 
     load_dashboard()
     
-DEBUG('w')'''
-
+#DEBUG('A')
 load_mainpage()
-
 root.mainloop()
 
